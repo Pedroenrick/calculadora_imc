@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 
 class Home extends StatefulWidget {
@@ -8,6 +10,43 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  TextEditingController weightController = TextEditingController();
+  TextEditingController heightController = TextEditingController();
+
+  String infoText = 'Informe seus dados';
+
+  void calcImc() {
+    double weight = double.parse(weightController.text);
+    double height = double.parse(heightController.text) / 100;
+    double imc = weight / (height * height);
+
+    if (imc < 18.6) {
+      infoText = 'Abaixo do peso (${imc.toStringAsPrecision(4)})';
+    } else if (imc >= 18.6 && imc < 24.9) {
+      infoText = 'Peso ideal (${imc.toStringAsPrecision(4)})';
+    } else if (imc >= 24.9 && imc < 29.9) {
+      infoText = 'Levemente acima do peso (${imc.toStringAsPrecision(4)})';
+    } else if (imc >= 29.9 && imc < 34.9) {
+      infoText = 'Obesidade grau I (${imc.toStringAsPrecision(4)})';
+    } else if (imc >= 34.9 && imc < 39.9) {
+      infoText = 'Obesidade grau II (${imc.toStringAsPrecision(4)})';
+    } else if (imc >= 40) {
+      infoText = 'Obesidade grau III (${imc.toStringAsPrecision(4)})';
+    }
+
+    setState(() {
+      infoText;
+    });
+  }
+
+  void _resetFields() {
+    setState(() {
+      weightController.text = '';
+      heightController.text = '';
+      infoText = 'Informe seus dados';
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,7 +56,7 @@ class _HomeState extends State<Home> {
         backgroundColor: Colors.green,
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: _resetFields,
             icon: const Icon(Icons.refresh),
           ),
         ],
@@ -33,30 +72,32 @@ class _HomeState extends State<Home> {
                 size: 120.0,
                 color: Colors.green,
               ),
-              const TextField(
+              TextField(
+                controller: weightController,
                 keyboardType: TextInputType.number,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Peso (kg)',
                   labelStyle: TextStyle(color: Colors.green),
                 ),
                 textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.green, fontSize: 25.0),
+                style: const TextStyle(color: Colors.green, fontSize: 25.0),
               ),
-              const TextField(
+              TextField(
+                controller: heightController,
                 keyboardType: TextInputType.number,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Altura (cm)',
                   labelStyle: TextStyle(color: Colors.green),
                 ),
                 textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.green, fontSize: 25.0),
+                style: const TextStyle(color: Colors.green, fontSize: 25.0),
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
                 child: SizedBox(
                   height: 50.0,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: calcImc,
                     style:
                         ElevatedButton.styleFrom(backgroundColor: Colors.green),
                     child: const Text(
@@ -66,10 +107,10 @@ class _HomeState extends State<Home> {
                   ),
                 ),
               ),
-              const Text(
-                'Informe seus dados',
+              Text(
+                infoText,
                 textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.green, fontSize: 25.0),
+                style: const TextStyle(color: Colors.green, fontSize: 25.0),
               ),
             ],
           )),
