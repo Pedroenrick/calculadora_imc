@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 
 class Home extends StatefulWidget {
@@ -48,6 +46,7 @@ class _HomeState extends State<Home> {
       weightController.text = '';
       heightController.text = '';
       infoText = 'Informe seus dados';
+      formKey = GlobalKey<FormState>();
     });
   }
 
