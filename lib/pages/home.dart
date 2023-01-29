@@ -15,6 +15,10 @@ class _HomeState extends State<Home> {
 
   String infoText = 'Informe seus dados';
 
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  String errorTextWeight = '';
+  String errorTextHeight = 'informe uma altura válido';
+
   void calcImc() {
     double weight = double.parse(weightController.text);
     double height = double.parse(heightController.text) / 100;
@@ -63,7 +67,9 @@ class _HomeState extends State<Home> {
       ),
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+        child: Form(
+          key: formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -72,7 +78,13 @@ class _HomeState extends State<Home> {
                 size: 120.0,
                 color: Colors.green,
               ),
-              TextField(
+              TextFormField(
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    errorTextWeight = 'informe um peso válido';
+                    return errorTextWeight;
+                  }
+                },
                 controller: weightController,
                 keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
@@ -82,7 +94,13 @@ class _HomeState extends State<Home> {
                 textAlign: TextAlign.center,
                 style: const TextStyle(color: Colors.green, fontSize: 25.0),
               ),
-              TextField(
+              TextFormField(
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    errorTextHeight = 'informe uma altura válida';
+                    return errorTextHeight;
+                  }
+                },
                 controller: heightController,
                 keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
@@ -97,7 +115,11 @@ class _HomeState extends State<Home> {
                 child: SizedBox(
                   height: 50.0,
                   child: ElevatedButton(
-                    onPressed: calcImc,
+                    onPressed: () {
+                      if (formKey.currentState!.validate()) {
+                        calcImc();
+                      }
+                    },
                     style:
                         ElevatedButton.styleFrom(backgroundColor: Colors.green),
                     child: const Text(
@@ -113,7 +135,9 @@ class _HomeState extends State<Home> {
                 style: const TextStyle(color: Colors.green, fontSize: 25.0),
               ),
             ],
-          )),
+          ),
+        ),
+      ),
     );
   }
 }
